@@ -24,17 +24,18 @@ app.listen(40888);
 
 
 function enter(pool, req, res) {
-  const name = req.body.text0, pass = req.body.text1;
+  const name = req.body.login, pass = req.body.pass;
   const newPass = encryption(crypto, pass);
   pool.getConnection((err, connection) => {
     connection.query('SELECT ?? FROM passport WHERE ?? = ? AND ?? = ? LIMIT 1', ['id', 'pass', newPass, 'name', name], (err, results) => {
       connection.release();
       take(err, 'Ошибка запроса в БД при входе пользователя');
       if (results.length != 0) { //данные введены верно
-        res.sendStatus(200);
+        const response = JSON.stringify({code: 200});
       } else {
-        res.sendStatus(300);
+        const response = JSON.stringify({code: 204});
       }
+      res.send(response);
     });
   });
 };
