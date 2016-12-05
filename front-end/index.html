@@ -3,6 +3,50 @@
         <title>Test</title>
     </head>
     <body>
-        <p>Hello!</p>
+        <form method='post' action='/enter'>
+            <input type='text' name='login' placeholder='login' id='login'><br>
+            <input type='text' name='pass' placeholder='pass' id='pass'><br>
+            <input type='submit' value='OK' id='ok'>
+        </form>
+
+        <form method='post' action='/reg'>
+            <input type='text' name='login' placeholder='login' id='loginR'><br>
+            <input type='text' name='pass' placeholder='pass' id='passR'><br>
+            <input type='submit' value='OK' id='okR'>
+        </form>
     </body>
+
+    <script>
+    const sendJSON = (data, path) => { //отправка данных на сервер POST-запросом
+        const xhr = new XMLHttpRequest(),
+                json = JSON.stringify(data);
+        xhr.open('POST', path, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.send(json);
+
+        return xhr;
+    };
+    
+    document.querySelector('#ok').addEventListener('click', event => {
+        event.preventDefault();
+        const data = {
+            login: document.querySelector('#login').value,
+            pass: document.querySelector('#pass').value
+        };
+
+        sendJSON(data, '/enter');
+    });
+
+    document.querySelector('#okR').addEventListener('click', event => {
+        event.preventDefault();
+        const data = {
+            login: document.querySelector('#loginR').value,
+            pass: document.querySelector('#passR').value
+        };
+
+        sendJSON(data, '/reg');
+    });
+    console.log('work');
+    </script>
 </html>
