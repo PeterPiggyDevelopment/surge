@@ -3,16 +3,27 @@
         <title>Test</title>
     </head>
     <body>
+        <h3>Вход</h3>
         <form method='post' action='/enter'>
             <input type='text' name='login' placeholder='login' id='login'><br>
             <input type='text' name='pass' placeholder='pass' id='pass'><br>
             <input type='submit' value='OK' id='ok'>
         </form>
 
+        <h3>Регистрация</h3>
         <form method='post' action='/reg'>
             <input type='text' name='login' placeholder='login' id='loginR'><br>
             <input type='text' name='pass' placeholder='pass' id='passR'><br>
             <input type='submit' value='OK' id='okR'>
+        </form>
+
+        <h3>Формирование Бюджета</h3>
+        <form method='post' action='/reg'>
+            <input type='text' name='money' placeholder='money' id='loginB'><br>
+            <input type='text' name='count' placeholder='count' id='countB'><br>
+            <input type='text' name='day' placeholder='now' id='dayB'><br>
+            <input type='text' name='day' placeholder='id' id='idB'><br>
+            <input type='submit' value='OK' id='okB'>
         </form>
     </body>
 
@@ -46,6 +57,18 @@
         };
 
         sendJSON(data, '/reg');
+    });
+
+    document.querySelector('#okB').addEventListener('click', event => {
+        event.preventDefault();
+        const data = {
+            money: document.querySelector('#loginB').value,
+            count: document.querySelector('#countB').value,
+            start: document.querySelector('#dayB').value,
+            id: document.querySelector('#idB').value
+        };
+
+        sendJSON(data, '/time');
     });
     console.log('work');
     </script>

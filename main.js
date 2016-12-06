@@ -17,12 +17,16 @@ const pool = mysql.createPool({
 });
 
 
-app.post('/enter', (req, res) => { //обработка пост-запроса
+app.post('/enter', (req, res) => { //вход
     post.enter(pool, req, res);
 });
 
-app.post('/reg', (req, res) => {
+app.post('/reg', (req, res) => { //регистрация
     post.registration(pool, req, res);
 });
 
-app.listen(40888);
+app.post('/time', (req, res) => { //формирование бюджета
+    post.time(pool, req, res);
+});
+
+app.listen(8888);

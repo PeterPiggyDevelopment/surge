@@ -39,6 +39,26 @@ function registration(pool, req, res) {
   });
 };
 
+function time(pool, req, res) {
+    pool.getConnection((err, connection) => {
+        connection.query(`SELECT ?? FROM time WHERE ?? = ? AND ?? = ? LIMIT 1`, ['id', 'count', req.body.count, 'id_user', req.body.id], (err, results) => {
+        if (results.length === 0) { //если пользователь ещё не добавлял этот бюджет
+            connection.query(`INSERT INTO time (??, ??, ??, ??, ??) VALUES(?, ?, ?, ?, DATE_ADD(?, INTERVAL ? DAY))`,
+                            ['id_user', 'start', 'count', 'money', 'end', req.body.id, req.body.start, req.body.count, req.body.money, req.body.start, req.body.count], (err, rows, fields) => {
+            connection.release();
+            res.send({code: 200});
+            });
+        } else {
+            connection.query(`UPDATE time SET ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`, 
+                            ['start', req.body.start, 'money', req.body.money, 'id_user', req.body.id, 'count', req.body.count], (error, resultsTwo) => {
+            connection.release();
+            res.send({code: 226});
+            });
+        }
+        });
+    });
+};
+
 function encryption(crypto, pass) { //шифрование пароля
   return crypto.createHmac('sha256', 'secret').update(pass).digest('hex');
 };
@@ -53,3 +73,4 @@ function take(err, message) { //обработка ошибок
 
 exports.enter = enter;
 exports.registration = registration;
+exports.time = time;
