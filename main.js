@@ -33,4 +33,8 @@ app.post('/source', (req, res) => { //добавление источников 
     post.source(pool, req, res);
 });
 
+app.post('/card', (req, res) => { //привязка карты
+    post.card(pool, req, res);
+});
+
 app.listen(8888);

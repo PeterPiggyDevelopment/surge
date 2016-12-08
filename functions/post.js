@@ -75,7 +75,23 @@ function source(pool, req, res) {
             };
         });
     });
-}
+};
+
+function card(pool, req, res) {
+    const data = req.body;
+    if (data.idSource === '') data.idSource = null;
+    pool.getConnection((err, connection) => {
+        take(err, 'Ошибка получения соединения из пула БД');
+        connection.query(`INSERT INTO cards (??, ??, ??, ??, ??) VALUES(?, ?, ?, ?, ?)`, ['id_user', 'id_source', 'type', 'number', 'balance', data.idUser, data.idSource, data.type, data.number, data.balance], (err, rows, fields) => {
+            connection.release();
+            if (err) {
+              res.send({code: 400});
+            } else {
+              res.send({code: 200, id: rows.insertId});
+            }
+        });
+    });
+};
 
 function encryption(crypto, pass) { //шифрование пароля
   return crypto.createHmac('sha256', 'secret').update(pass).digest('hex');
@@ -93,3 +109,4 @@ exports.enter = enter;
 exports.registration = registration;
 exports.time = time;
 exports.source = source;
+exports.card = card;
