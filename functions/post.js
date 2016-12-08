@@ -2,6 +2,7 @@ function enter(pool, req, res) {
   const name = req.body.login, pass = req.body.pass;
   const newPass = encryption(crypto, pass);
   pool.getConnection((err, connection) => {
+    take(err, 'Ошибка получения соединения из пула БД');
     connection.query('SELECT ?? FROM passport WHERE ?? = ? AND ?? = ? LIMIT 1', ['id', 'pass', newPass, 'login', name], (err, results) => {
       connection.release();
       take(err, 'Ошибка запроса в БД при входе пользователя');
@@ -20,6 +21,7 @@ function registration(pool, req, res) {
   const name = req.body.login, pass = req.body.pass;
   const newPass = encryption(crypto, pass);
   pool.getConnection((err, connection) => {
+    take(err, 'Ошибка получения соединения из пула БД');
     connection.query('SELECT ?? FROM passport WHERE ?? = ? LIMIT 1', ['id', 'login', name], (err, results) => {
       take(err, 'Ошибка при проверке уникальности ника при регистрации пользователя');
       let response;
@@ -41,6 +43,7 @@ function registration(pool, req, res) {
 
 function time(pool, req, res) {
     pool.getConnection((err, connection) => {
+        take(err, 'Ошибка получения соединения из пула БД');
         connection.query(`SELECT ?? FROM time WHERE ?? = ? AND ?? = ? LIMIT 1`, ['id', 'count', req.body.count, 'id_user', req.body.id], (err, results) => {
         if (results.length === 0) { //если пользователь ещё не добавлял этот бюджет
             connection.query(`INSERT INTO time (??, ??, ??, ??, ??) VALUES(?, ?, ?, ?, DATE_ADD(?, INTERVAL ? DAY))`,
@@ -59,6 +62,21 @@ function time(pool, req, res) {
     });
 };
 
+function source(pool, req, res) {
+    const data = req.body;
+    pool.getConnection((err, connection) => {
+        take(err, 'Ошибка получения соединения из пула БД');
+        connection.query(`INSERT INTO source (??, ??, ??) VALUES(?, ?, ?)`, ['id_user', 'name', 'type', data.id, data.name, data.type], (err, rows, fields) => {
+            connection.release();
+            if (err && err.errno === 1062) {
+               res.send({code: 403});
+            } else {
+               res.send({code: 200, id: rows.insertId});
+            };
+        });
+    });
+}
+
 function encryption(crypto, pass) { //шифрование пароля
   return crypto.createHmac('sha256', 'secret').update(pass).digest('hex');
 };
@@ -74,3 +92,4 @@ function take(err, message) { //обработка ошибок
 exports.enter = enter;
 exports.registration = registration;
 exports.time = time;
+exports.source = source;

@@ -29,4 +29,8 @@ app.post('/time', (req, res) => { //формирование бюджета
     post.time(pool, req, res);
 });
 
+app.post('/source', (req, res) => { //добавление источников дохода/расхода
+    post.source(pool, req, res);
+});
+
 app.listen(8888);
