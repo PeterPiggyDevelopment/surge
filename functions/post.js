@@ -3,7 +3,8 @@ function enter(pool, req, res) {
   const newPass = encryption(crypto, pass);
   pool.getConnection((err, connection) => {
     take(err, 'Ошибка получения соединения из пула БД');
-    connection.query('SELECT ?? FROM passport WHERE ?? = ? AND ?? = ? LIMIT 1', ['id', 'pass', newPass, 'login', name], (err, results) => {
+    const query = 'SELECT ?? FROM passport WHERE ?? = ? AND ?? = ? LIMIT 1';
+    connection.query(query, ['id', 'pass', newPass, 'login', name], (err, results) => {
       connection.release();
       take(err, 'Ошибка запроса в БД при входе пользователя');
       let response;
@@ -22,7 +23,8 @@ function registration(pool, req, res) {
   const newPass = encryption(crypto, pass);
   pool.getConnection((err, connection) => {
     take(err, 'Ошибка получения соединения из пула БД');
-    connection.query('SELECT ?? FROM passport WHERE ?? = ? LIMIT 1', ['id', 'login', name], (err, results) => {
+    const query = 'SELECT ?? FROM passport WHERE ?? = ? LIMIT 1';
+    connection.query(query, ['id', 'login', name], (err, results) => {
       take(err, 'Ошибка при проверке уникальности ника при регистрации пользователя');
       let response;
       if (results.length != 0) { //такой пользователь уже есть
@@ -30,7 +32,8 @@ function registration(pool, req, res) {
           response = {code: 406};
           res.send(response);
       } else { //такого пользователя нет
-        connection.query('INSERT INTO passport (??, ??) VALUES (?, ?)', ['login', 'pass', name, newPass], (err, rows, fields) => {
+        const query = 'INSERT INTO passport (??, ??) VALUES (?, ?)';
+        connection.query(query, ['login', 'pass', name, newPass], (err, rows, fields) => {
             connection.release();
             take(err, 'Ошибка при попытке регистрации нового пользователя');
             response = {code: 200, id: rows.insertId};
@@ -66,7 +69,8 @@ function source(pool, req, res) {
     const data = req.body;
     pool.getConnection((err, connection) => {
         take(err, 'Ошибка получения соединения из пула БД');
-        connection.query(`INSERT INTO source (??, ??, ??) VALUES(?, ?, ?)`, ['id_user', 'name', 'type', data.id, data.name, data.type], (err, rows, fields) => {
+        const query = `INSERT INTO source (??, ??, ??) VALUES(?, ?, ?)`;
+        connection.query(query, ['id_user', 'name', 'type', data.id, data.name, data.type], (err, rows, fields) => {
             connection.release();
             if (err && err.errno === 1062) {
                res.send({code: 403});
@@ -82,7 +86,8 @@ function card(pool, req, res) {
     if (data.idSource === '') data.idSource = null;
     pool.getConnection((err, connection) => {
         take(err, 'Ошибка получения соединения из пула БД');
-        connection.query(`INSERT INTO cards (??, ??, ??, ??, ??) VALUES(?, ?, ?, ?, ?)`, ['id_user', 'id_source', 'type', 'number', 'balance', data.idUser, data.idSource, data.type, data.number, data.balance], (err, rows, fields) => {
+        const query = `INSERT INTO cards (??, ??, ??, ??, ??) VALUES(?, ?, ?, ?, ?)`;
+        connection.query(query, ['id_user', 'id_source', 'type', 'number', 'balance', data.idUser, data.idSource, data.type, data.number, data.balance], (err, rows, fields) => {
             connection.release();
             if (err) {
               res.send({code: 400});
