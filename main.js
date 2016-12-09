@@ -37,4 +37,8 @@ app.post('/card', (req, res) => { //привязка карты
     post.card(pool, req, res);
 });
 
+app.post('/coins', (req, res) => { //изменение баланса
+    post.coins(pool, req, res);
+});
+
 app.listen(8888);

@@ -52,7 +52,7 @@ function time(pool, req, res) {
             res.send({code: 200});
             });
         } else {
-            connection.query(`UPDATE time SET ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ?`, 
+            connection.query(`UPDATE time SET ?? = ?, ?? = ? WHERE ?? = ? AND ?? = ? LIMIT 1`, 
                             ['start', req.body.start, 'money', req.body.money, 'id_user', req.body.id, 'count', req.body.count], (error, resultsTwo) => {
             connection.release();
             res.send({code: 226});
@@ -93,6 +93,30 @@ function card(pool, req, res) {
     });
 };
 
+function coins(pool, req, res) {
+    const data = req.body;
+    pool.getConnection((err, connection) => {
+       take(err, 'Ошибка получения соединения из пула БД');
+       const query = `UPDATE cards SET ?? = ?? + ? WHERE ?? = ? AND ?? = ? LIMIT 1`;
+       connection.query(query, ['balance', 'balance', data.balance, 'id', data.idCard, 'id_user', data.idUser], (error, results) => {
+          if (error) {
+              connection.release();
+              res.send({code: 501});
+          } else {
+            const query = `INSERT INTO transaction (??, ??, ??, ??) VALUES(?, ?, ?, ?)`;
+            connection.query(query, ['id_user', 'id_card', 'money', 'day', data.idUser, data.idCard, data.balance, data.day], (e, rows, fields) => {
+                connection.release();
+                if (e && e.errno === 1452) {
+                    res.send({code: 501});
+                } else {
+                    res.send({code: 200, id: rows.insertId});
+                }
+            });
+          }
+       }); 
+    });
+};
+
 function encryption(crypto, pass) { //шифрование пароля
   return crypto.createHmac('sha256', 'secret').update(pass).digest('hex');
 };
@@ -110,3 +134,4 @@ exports.registration = registration;
 exports.time = time;
 exports.source = source;
 exports.card = card;
+exports.coins = coins;

@@ -5,16 +5,16 @@
     <body>
         <h3>Вход</h3>
         <form>
-            <input type='text' name='login' placeholder='login' id='login'><br>
-            <input type='text' name='pass' placeholder='pass' id='pass'><br>
-            <input type='submit' value='OK' id='ok' class='buttons'>
+            <input type='text' name='login' placeholder='login'><br>
+            <input type='text' name='pass' placeholder='pass'><br>
+            <input type='submit' value='OK' class='buttons'>
         </form>
 
         <h3>Регистрация</h3>
         <form>
             <input type='text' name='login' placeholder='login'><br>
             <input type='text' name='pass' placeholder='pass'><br>
-            <input type='submit' value='OK' id='okR' class='buttons'>
+            <input type='submit' value='OK' class='buttons'>
         </form>
 
         <h3>Формирование Бюджета</h3>
@@ -23,7 +23,7 @@
             <input type='text' name='count' placeholder='count'><br>
             <input type='text' name='day' placeholder='now'><br>
             <input type='text' name='id' placeholder='id'><br>
-            <input type='submit' value='OK' id='okB' class='buttons'>
+            <input type='submit' value='OK' class='buttons'>
         </form>
 
         <h3>Добавление источников дохода</h3>
@@ -31,7 +31,7 @@
             <input type='text' name='id' placeholder='id_user'><br>
             <input type='text' name='name' placeholder='name'><br>
             <input type='text' name='type' placeholder='type'><br>
-            <input type='submit' value='OK' id='okD' class='buttons'>
+            <input type='submit' value='OK' class='buttons'>
         </form>
 
         <h3>Добавление карт</h3>
@@ -41,7 +41,16 @@
             <input type='text' name='type' placeholder='type'><br>
             <input type='text' name='number' placeholder='number'><br>
             <input type='text' name='balance' placeholder='balance'><br>
-            <input type='submit' value='OK' id='okD' class='buttons'>
+            <input type='submit' value='OK' class='buttons'>
+        </form>
+
+        <h3>Изменение баланса</h3>
+        <form>
+            <input type='text' name='idUser' placeholder='id_user'><br>
+            <input type='text' name='idCard' placeholder='id_card'><br>
+            <input type='text' name='balance' placeholder='balance'><br>
+            <input type='text' name='day' placeholder='day'><br>
+            <input type='submit' value='OK' class='buttons'>
         </form>
     </body>
 
@@ -84,6 +93,7 @@
     buttons[2].path = '/time';
     buttons[3].path = '/source';
     buttons[4].path = '/card';
+    buttons[5].path = '/coins';
     main(buttons);
     </script>
 </html>
